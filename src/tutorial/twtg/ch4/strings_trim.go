@@ -7,6 +7,7 @@ import (
 
 func main() {
 	str := " hello, world!"
+	fmt.Printf("%s\n", *(&str))
 	str1 := strings.TrimSpace(str)
 	fmt.Printf("after trimspace: %s\n", str1)
 	str2 := strings.Trim(str, "!")
