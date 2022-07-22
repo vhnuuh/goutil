@@ -1,0 +1,19 @@
+go run main.go -kubeconfig=C:\Users\vhnuuh\.kube\config -logtostderr=true -lease-lock-name=example -lease-lock-namespace=default -id=1
+
+# kubectl get lease example -o yaml
+apiVersion: coordination.k8s.io/v1
+kind: Lease
+metadata:
+  creationTimestamp: "2022-07-22T09:20:20Z"
+  name: example
+  namespace: default
+  resourceVersion: "183595008"
+  selfLink: /apis/coordination.k8s.io/v1/namespaces/default/leases/example
+  uid: d7bbcb0e-f93b-4b3e-b4b9-eac00f495eaf
+spec:
+  acquireTime: "2022-07-22T09:25:06.286056Z"
+  holderIdentity: "2"
+  leaseDurationSeconds: 60
+  leaseTransitions: 1
+  renewTime: "2022-07-22T09:28:44.240836Z"
+
