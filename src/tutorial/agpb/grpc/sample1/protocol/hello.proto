@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package protocol;
+
+option go_package = "./protocol";
+
+message String {
+  string value = 1;
+}
+
+service HelloService {
+  rpc Hello (String) returns (String);
+
+  rpc Channel (stream String) returns (stream String);
+}
+
+
