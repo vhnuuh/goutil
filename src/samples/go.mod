@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/Shopify/sarama v1.34.1
 	github.com/gin-gonic/gin v1.8.1
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/sirupsen/logrus v1.8.1
 )
