@@ -44,26 +44,22 @@ func init() {
 		DialTimeout: dialTimeout,
 	}
 
-	cli, err := clientv3.New(cfg)
+	var err error
+	cli, err = clientv3.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
+	kv = clientv3.NewKV(cli)
 	initConfig()
 }
 
 func watchAndUpdate() {
-	w := cli.Watcher(configPath, nil)
+	watchChan := cli.Watch(context.TODO(), configPath)
 	go func() {
 		// watch 该节点下的每次变化
-		for {
-			resp, err := w.Next(context.Background())
-			if err != nil {
-				log.Fatal(err)
-			}
-			log.Println("new values is ", resp.Node.Value)
-
-			err = json.Unmarshal([]byte(resp.Node.Value), &appConfig)
-			if err != nil {
+		for res := range watchChan {
+			value := res.Events[0].Kv.Value
+			if err := json.Unmarshal(value, &appConfig); err != nil {
 				log.Fatal(err)
 			}
 		}
@@ -72,11 +68,23 @@ func watchAndUpdate() {
 
 func initConfig() {
 	val, _ := json.Marshal(conf)
-	pr, _ := kv.Put(context.TODO(), configPath, string(val))
+	pr, err := kv.Put(context.TODO(), configPath, string(val), clientv3.WithPrevKV())
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("putResp is ", pr)
+	log.Println("Revision:", pr.Header.Revision)
+	if pr.PrevKv != nil {
+		log.Println("RrevValue:", string(pr.PrevKv.Value))
+	}
 
 	resp, err := kv.Get(context.TODO(), configPath)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if len(resp.Kvs) < 1 {
+		log.Fatal("Config not found")
 	}
 
 	err = json.Unmarshal(resp.Kvs[0].Value, &appConfig)
@@ -94,4 +102,5 @@ func main() {
 	conf := getConfig()
 	watchAndUpdate()
 	fmt.Println(conf)
+	select {}
 }
