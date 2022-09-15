@@ -1,3 +1,4 @@
+// https://segmentfault.com/a/1190000015591319
 package main
 
 import "fmt"
