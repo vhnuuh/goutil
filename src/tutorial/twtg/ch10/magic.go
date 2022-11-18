@@ -25,6 +25,7 @@ func (Voodoo) Magic() {
 
 func main() {
 	v := new(Voodoo)
+	v.Base.Magic()
 	v.Magic()
 	v.MoreMagic()
 }
